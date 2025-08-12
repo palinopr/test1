@@ -161,10 +161,18 @@ This repository uses a custom test script approach rather than standard pytest f
 - Run pre-commit hooks before committing: `pre-commit run --all-files`
 - Test both with and without API keys to verify fallback modes work correctly
 - Check that new custom exceptions are properly caught and logged in tests
+
+**Troubleshooting Common Issues**:
+- **Import errors**: Ensure you've run `pip install -e .[dev]` and are in the correct directory
+- **API connection failures**: Check your `.env` file has valid API keys and use `/health/detailed` to diagnose
+- **Test failures**: Run tests without API keys first (`NO_COLOR=1 python -m pytest`) to verify basic functionality
+- **Pre-commit hook failures**: Run `black src/` and `isort src/` manually, then commit again
+- **Database issues**: Check that `conversation_states.db` exists and is writable, or delete it to recreate
 </testing_instructions>
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
 
