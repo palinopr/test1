@@ -70,7 +70,7 @@ class MetaWebhookHandler:
     def __init__(self):
         self.verify_token = os.getenv("META_WEBHOOK_VERIFY_TOKEN")
         self.app_secret = os.getenv("META_WEBHOOK_SECRET")
-        self.qualification_agent = get_qualification_agent()
+        self._qualification_agent = None  # Lazy initialization
         self.langsmith_config = get_langsmith_config()
         
         # Initialize GHL tools for contact management
@@ -82,6 +82,17 @@ class MetaWebhookHandler:
             logger.warning("META_WEBHOOK_VERIFY_TOKEN not configured")
         if not self.app_secret:
             logger.warning("META_WEBHOOK_SECRET not configured - signature validation disabled")
+    
+    @property
+    def qualification_agent(self):
+        """Lazy initialization of qualification agent."""
+        if self._qualification_agent is None:
+            try:
+                self._qualification_agent = get_qualification_agent()
+            except ValueError as e:
+                logger.warning("Qualification agent not available", error=str(e))
+                self._qualification_agent = None
+        return self._qualification_agent
     
     def verify_webhook_signature(self, payload: bytes, signature: str) -> bool:
         """
@@ -573,3 +584,4 @@ async def handle_webhook(request: Request, background_tasks: BackgroundTasks) ->
 def get_webhook_handler() -> MetaWebhookHandler:
     """Get the global webhook handler instance."""
     return webhook_handler
+
