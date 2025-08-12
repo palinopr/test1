@@ -651,7 +651,7 @@ class ConversationStateManager:
             logger.error("Error cleaning up old states", error=str(e))
             return 0
     
-    def get_checkpointer(self) -> BaseCheckpointSaver:
+    def get_checkpointer(self) -> MemorySaver:
         """Get LangGraph checkpointer for persistent state management."""
         return self.checkpointer
     
@@ -749,5 +749,6 @@ def save_conversation_state(state: ConversationState) -> bool:
     """
     manager = get_state_manager()
     return manager.save_state(state)
+
 
 
