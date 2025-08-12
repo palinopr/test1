@@ -18,8 +18,8 @@ from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError
 
 from ..agents.qualification_agent import get_qualification_agent
-from ..exceptions import WebhookError, ConfigurationError
 from ..config.langsmith_config import get_langsmith_config
+from ..exceptions import ConfigurationError, WebhookError
 from ..tools.ghl_tools import AddContactTagTool, SearchContactsTool, UpdateContactTool
 
 logger = structlog.get_logger(__name__)
