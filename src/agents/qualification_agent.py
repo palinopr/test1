@@ -471,16 +471,20 @@ Use these tools strategically to enhance the conversation and track progress.
             }
 
         except Exception as e:
+            error_msg = f"Error processing qualification message: {str(e)}"
             logger.error(
-                "Error processing message", error=str(e), contact_id=contact_id
+                "Qualification agent processing error",
+                error=str(e),
+                contact_id=contact_id,
+                thread_id=thread_id,
+                error_type=type(e).__name__,
             )
-            return {
-                "response": "I apologize, but I'm having a technical issue. Let me help you - could you tell me about your business and what challenges you're facing?",
-                "qualification_status": "initial",
-                "conversation_stage": "greeting",
-                "thread_id": thread_id,
-                "error": str(e),
-            }
+            raise QualificationError(
+                message=error_msg,
+                contact_id=contact_id,
+                thread_id=thread_id,
+                conversation_stage="error",
+            )
 
     def _initialize_state(
         self, contact_id: str, contact_info: Optional[Dict[str, Any]]
@@ -565,4 +569,5 @@ async def qualify_customer(
     """
     agent = get_qualification_agent()
     return await agent.process_message(message, contact_id, contact_info, thread_id)
+
 
