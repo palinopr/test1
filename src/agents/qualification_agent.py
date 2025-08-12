@@ -7,20 +7,20 @@ services, maintains conversation context, uses GHL tools, and creates personaliz
 
 import json
 import os
-from typing import Dict, Any, List, Optional, TypedDict, Annotated
 from datetime import datetime
+from typing import Annotated, Any, Dict, List, Optional, TypedDict
 
 import structlog
-from langchain_core.messages import HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
-from langgraph.graph import StateGraph, END
-from langgraph.graph.message import add_messages
 from langgraph.checkpoint.memory import MemorySaver
+from langgraph.graph import END, StateGraph
+from langgraph.graph.message import add_messages
 from langgraph.prebuilt import ToolNode
 
-from ..tools.ghl_tools import get_ghl_tools, create_wow_moment_context
 from ..config.langsmith_config import get_langsmith_config
+from ..tools.ghl_tools import create_wow_moment_context, get_ghl_tools
 
 logger = structlog.get_logger(__name__)
 

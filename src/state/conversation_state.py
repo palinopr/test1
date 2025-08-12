@@ -5,16 +5,16 @@ This module provides comprehensive state management for customer qualification c
 including persistent state across webhook calls, memory optimization, and context management.
 """
 
-import os
 import json
+import os
 import sqlite3
-from typing import Dict, Any, List, Optional, TypedDict, Union
+from dataclasses import asdict, dataclass
 from datetime import datetime, timedelta
-from dataclasses import dataclass, asdict
 from enum import Enum
+from typing import Any, Dict, List, Optional, TypedDict, Union
 
 import structlog
-from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
+from langchain_core.messages import AIMessage, BaseMessage, HumanMessage, SystemMessage
 from langgraph.checkpoint.memory import MemorySaver
 
 logger = structlog.get_logger(__name__)

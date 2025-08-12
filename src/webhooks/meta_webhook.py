@@ -5,21 +5,21 @@ This module implements FastAPI webhook endpoints to receive lead information fro
 validate webhook signatures, extract lead data, and trigger the customer qualification agent.
 """
 
-import os
-import json
-import hmac
 import hashlib
-from typing import Dict, Any, Optional, List
+import hmac
+import json
+import os
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 import structlog
-from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
+from fastapi import BackgroundTasks, FastAPI, HTTPException, Request
 from fastapi.responses import JSONResponse
 from pydantic import BaseModel, Field, ValidationError
 
 from ..agents.qualification_agent import get_qualification_agent
-from ..tools.ghl_tools import SearchContactsTool, UpdateContactTool, AddContactTagTool
 from ..config.langsmith_config import get_langsmith_config
+from ..tools.ghl_tools import AddContactTagTool, SearchContactsTool, UpdateContactTool
 
 logger = structlog.get_logger(__name__)
 

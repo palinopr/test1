@@ -9,27 +9,28 @@ This is the main entry point that combines all components:
 - Proper error handling and logging
 """
 
+import asyncio
 import os
 import sys
-import asyncio
 from contextlib import asynccontextmanager
-from typing import Dict, Any, Optional
+from typing import Any, Dict, Optional
 
 import structlog
-from fastapi import FastAPI, Request, HTTPException, BackgroundTasks, Depends
-from fastapi.responses import JSONResponse, PlainTextResponse
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.middleware.trustedhost import TrustedHostMiddleware
 import uvicorn
 from dotenv import load_dotenv
+from fastapi import BackgroundTasks, Depends, FastAPI, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
+from fastapi.responses import JSONResponse, PlainTextResponse
+
+from .agents.qualification_agent import get_qualification_agent
 
 # Import our modules
 from .config.langsmith_config import (
+    get_langsmith_config,
     initialize_langsmith,
     setup_logging,
-    get_langsmith_config,
 )
-from .agents.qualification_agent import get_qualification_agent
 from .state.conversation_state import get_state_manager
 from .tools.ghl_tools import test_ghl_connection
 
@@ -298,8 +299,9 @@ async def handle_contact_create(payload: Dict[str, Any]):
         }
 
         # Create conversation state
-        from .state.conversation_state import create_conversation_state
         from datetime import datetime
+
+        from .state.conversation_state import create_conversation_state
 
         thread_id = (
             f"ghl_contact_{contact_id}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
