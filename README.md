@@ -2,6 +2,8 @@
 
 AI-powered customer qualification system for Go High Level using LangGraph. This system automatically qualifies leads from Meta ads through intelligent conversations, creating personalized "wow moments" and seamlessly integrating with your GHL CRM.
 
+> **Note**: Repository access verified and lint checks completed successfully.
+
 ## 🚀 Quick Start
 
 ### Prerequisites
