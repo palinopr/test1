@@ -471,8 +471,8 @@ class ConversationStateManager:
         # Initialize database
         self._init_database()
         
-        # Create LangGraph checkpointer
-        self.checkpointer = SqliteSaver.from_conn_string(f"sqlite:///{self.db_path}")
+        # Create LangGraph checkpointer (using MemorySaver for now)
+        self.checkpointer = MemorySaver()
         
         logger.info("ConversationStateManager initialized", db_path=self.db_path)
     
@@ -749,4 +749,5 @@ def save_conversation_state(state: ConversationState) -> bool:
     """
     manager = get_state_manager()
     return manager.save_state(state)
+
 
