@@ -62,6 +62,15 @@ This is a FastAPI-based webhook system for GHL (Go High Level) customer qualific
 - **Error Handling**: Structured exception hierarchy with detailed logging
 
 **Deployment Support**: Docker, docker-compose for local development, and LangGraph Cloud for production deployment.
+
+**Quick Start Guide for New Developers**:
+1. Clone the repository and navigate to the project directory
+2. Run `./setup-dev.sh` to set up the development environment
+3. Configure API keys in `.env` file (copy from `.env.example`)
+4. Test the setup: `python -m pytest` to run tests
+5. Start the application: `python src/main.py` or `uvicorn src.main:app --reload`
+6. Check health status: Visit `http://localhost:8000/health/detailed` to verify all systems are working
+7. View API documentation: Visit `http://localhost:8000/docs` for interactive API docs
 </repository_structure>
 
 <dependencies_and_installation>
@@ -156,6 +165,7 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
 
