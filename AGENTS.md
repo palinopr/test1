@@ -1,0 +1,94 @@
+<general_rules>
+When developing code for this repository, follow these essential practices:
+
+- **Search Before Creating**: Always search existing modules in `src/agents/`, `src/tools/`, `src/state/`, `src/webhooks/`, and `src/config/` directories before creating new functions or classes. Reuse existing functionality when possible.
+
+- **Code Formatting**: Use Black formatter with line-length 88 for all Python code. Configuration is already set in `pyproject.toml`. Run `black src/` to format code.
+
+- **Import Organization**: Use isort for import sorting, configured to be compatible with Black. Run `isort src/` to organize imports properly.
+
+- **Module Patterns**: Follow the established architectural patterns:
+  - `src/agents/`: LangGraph StateGraph workflows and qualification logic
+  - `src/tools/`: GHL API integration utilities and LangChain tools
+  - `src/state/`: Conversation state management and persistence
+  - `src/webhooks/`: Webhook handlers for Meta/GHL integration
+  - `src/config/`: Configuration management and LangSmith tracing setup
+
+- **Environment Variables**: Always use environment variables for API keys and configuration. Reference `.env.example` for required variables.
+
+- **Logging**: Use structured logging with `structlog` following the patterns established in existing modules.
+
+- **Error Handling**: Implement comprehensive error handling with fallback modes, especially for external API integrations (OpenAI, GHL, LangSmith).
+</general_rules>
+
+<repository_structure>
+This is a FastAPI-based webhook system for GHL (Go High Level) customer qualification using LangGraph for conversational AI workflows.
+
+**Main Application Flow**: Meta Ad → Go High Level → GHL Webhook → LangGraph Agent → Response via GHL Tools
+
+**Core Components**:
+- **FastAPI Server** (`src/main.py`): Main application server with webhook endpoints, health checks, and API routes
+- **Qualification Agent** (`src/agents/`): LangGraph StateGraph implementation for multi-stage customer qualification conversations
+- **GHL Integration** (`src/tools/`): Comprehensive Go High Level API wrapper tools for messaging, contact management, and CRM operations
+- **State Management** (`src/state/`): Persistent conversation state using SQLite database with qualification tracking
+- **Webhook Handlers** (`src/webhooks/`): Meta webhook integration for processing inbound messages and contact events
+- **Configuration** (`src/config/`): LangSmith tracing setup with fallback support and structured logging configuration
+
+**Key Files**:
+- `conversation_states.db`: SQLite database for persistent conversation state
+- `langgraph.json`: LangGraph Cloud deployment configuration
+- `examples/`: Sample API responses, webhook payloads, and conversation flows
+- Root-level test files: Custom test scripts for each major component
+
+**Deployment Support**: Docker, docker-compose for local development, and LangGraph Cloud for production deployment.
+</repository_structure>
+
+<dependencies_and_installation>
+**Requirements**: Python 3.9 or higher
+
+**Installation Steps**:
+1. Install core dependencies: `pip install -r requirements.txt`
+2. Copy environment template: `cp .env.example .env`
+3. Configure required API keys in `.env` file (OpenAI, GHL, LangSmith)
+4. For development, install optional dependencies: `pip install -e .` (includes pytest, black, isort)
+
+**Key Dependencies**:
+- **LangGraph/LangChain**: Core AI workflow and conversation management
+- **FastAPI + Uvicorn**: Web server and API framework
+- **OpenAI**: Language model integration
+- **Structlog**: Structured logging
+- **HTTPx/Requests**: HTTP client for API integrations
+- **Pydantic**: Data validation and serialization
+
+**Development Dependencies** (in `pyproject.toml`):
+- pytest, pytest-asyncio for testing
+- black, isort for code formatting
+- Additional dev tools for code quality
+
+**Environment Configuration**: All sensitive configuration is managed through environment variables. Use `.env.example` as a template and ensure all required API keys are properly configured before running the application.
+</dependencies_and_installation>
+
+<testing_instructions>
+This repository uses a custom test script approach rather than standard pytest framework patterns.
+
+**Test Structure**:
+- Test files are located in the root directory with `test_` prefix
+- Each major component has its own test file: `test_qualification_agent.py`, `test_ghl_tools.py`, `test_conversation_state.py`, `test_meta_webhook.py`, `test_main_app.py`
+
+**Running Tests**:
+- Run all tests: `python -m pytest`
+- Run individual test files directly: `python test_qualification_agent.py`
+- Tests are designed to work with or without API keys (fallback/mock modes)
+
+**Test Coverage**:
+- **Agent Testing**: LangGraph workflow validation, conversation flow testing, qualification logic
+- **Tools Testing**: GHL API integration, tool functionality, error handling
+- **State Testing**: Conversation persistence, state management, qualification scoring
+- **Webhook Testing**: Meta webhook handling, payload processing, integration flows
+- **Application Testing**: FastAPI endpoints, health checks, error handlers
+
+**Testing Environment**: Tests are designed to be runnable in development environments without requiring live API connections. Mock modes and fallback handling ensure tests can run even with missing API keys.
+</testing_instructions>
+
+<pull_request_formatting>
+</pull_request_formatting>
