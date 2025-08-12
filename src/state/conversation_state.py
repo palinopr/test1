@@ -15,8 +15,7 @@ from enum import Enum
 
 import structlog
 from langchain_core.messages import BaseMessage, HumanMessage, AIMessage, SystemMessage
-from langgraph.checkpoint.sqlite import SqliteSaver
-from langgraph.checkpoint.base import BaseCheckpointSaver
+from langgraph.checkpoint.memory import MemorySaver
 
 logger = structlog.get_logger(__name__)
 
@@ -750,3 +749,4 @@ def save_conversation_state(state: ConversationState) -> bool:
     """
     manager = get_state_manager()
     return manager.save_state(state)
+
