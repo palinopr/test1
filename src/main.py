@@ -511,9 +511,22 @@ async def manual_qualification(request: Request):
 
     except HTTPException:
         raise
-    except Exception as e:
-        logger.error("Error in manual qualification", error=str(e))
+    except QualificationError as e:
+        logger.error(
+            "Manual qualification error",
+            error=str(e),
+            contact_id=e.contact_id,
+            thread_id=e.thread_id,
+            conversation_stage=e.conversation_stage,
+        )
         raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        logger.error(
+            "Unexpected error in manual qualification",
+            error=str(e),
+            error_type=type(e).__name__,
+        )
+        raise HTTPException(status_code=500, detail=f"Unexpected error: {str(e)}")
 
 
 @app.get("/api/conversations")
@@ -590,4 +603,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
