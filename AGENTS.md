@@ -59,11 +59,19 @@ This is a FastAPI-based webhook system for GHL (Go High Level) customer qualific
 <dependencies_and_installation>
 **Requirements**: Python 3.9 or higher
 
-**Installation Steps**:
+**Quick Development Setup**:
+1. Run the automated setup script: `./setup-dev.sh`
+   - This script handles all installation steps automatically
+   - Installs core and development dependencies
+   - Sets up environment configuration
+   - Validates that all required dev tools are properly installed
+
+**Manual Installation Steps**:
 1. Install core dependencies: `pip install -r requirements.txt`
 2. Copy environment template: `cp .env.example .env`
 3. Configure required API keys in `.env` file (OpenAI, GHL, LangSmith)
-4. For development, install optional dependencies: `pip install -e .` (includes pytest, black, isort)
+4. For development, install optional dependencies: `pip install -e .[dev]` (includes pytest, black, isort, pre-commit)
+5. Install pre-commit hooks: `pre-commit install`
 
 **Key Dependencies**:
 - **LangGraph/LangChain**: Core AI workflow and conversation management
@@ -105,5 +113,6 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
