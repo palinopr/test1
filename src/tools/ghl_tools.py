@@ -16,6 +16,8 @@ import structlog
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
+from .exceptions import GHLAPIError
+
 logger = structlog.get_logger(__name__)
 
 
@@ -575,3 +577,4 @@ async def test_ghl_connection() -> Dict[str, Any]:
             "status_code": response.status_code,
             "has_api_key": bool(ghl_config.api_key),
         }
+
