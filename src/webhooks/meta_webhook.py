@@ -381,9 +381,17 @@ class MetaWebhookHandler:
 
         except Exception as e:
             logger.error(
-                "Error finding/creating GHL contact", error=str(e), lead_id=lead_data.id
+                "GHL contact creation/lookup error",
+                error=str(e),
+                lead_id=lead_data.id,
+                error_type=type(e).__name__,
+                webhook_type="meta",
             )
-            return None
+            raise WebhookError(
+                message=f"Error finding/creating GHL contact: {str(e)}",
+                webhook_type="meta",
+                lead_id=lead_data.id,
+            )
 
     async def trigger_qualification_agent(
         self,
@@ -662,6 +670,7 @@ async def handle_webhook(
 def get_webhook_handler() -> MetaWebhookHandler:
     """Get the global webhook handler instance."""
     return webhook_handler
+
 
 
 
