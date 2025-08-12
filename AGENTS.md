@@ -120,19 +120,35 @@ This repository uses a custom test script approach rather than standard pytest f
 - Run all tests: `python -m pytest`
 - Run individual test files directly: `python test_qualification_agent.py`
 - Tests are designed to work with or without API keys (fallback/mock modes)
+- For clean output, use `NO_COLOR=1 python -m pytest` to disable color formatting
+- Use `pytest --no-colors` flag when running in CI/CD environments
 
 **Test Coverage**:
 - **Agent Testing**: LangGraph workflow validation, conversation flow testing, qualification logic
-- **Tools Testing**: GHL API integration, tool functionality, error handling
+- **Tools Testing**: GHL API integration, tool functionality, error handling with custom exceptions
 - **State Testing**: Conversation persistence, state management, qualification scoring
 - **Webhook Testing**: Meta webhook handling, payload processing, integration flows
-- **Application Testing**: FastAPI endpoints, health checks, error handlers
+- **Application Testing**: FastAPI endpoints, comprehensive health checks, error handlers
+- **Configuration Testing**: Environment validation, API connectivity, database checks
 
-**Testing Environment**: Tests are designed to be runnable in development environments without requiring live API connections. Mock modes and fallback handling ensure tests can run even with missing API keys.
+**Testing Environment**: 
+- Tests are designed to be runnable in development environments without requiring live API connections
+- Mock modes and fallback handling ensure tests can run even with missing API keys
+- Custom exception classes are tested for proper error handling and logging
+- Configuration validation tests verify environment setup and connectivity
+- Health check endpoints are tested for comprehensive system status reporting
+
+**Test Execution Best Practices**:
+- Always run tests after making changes to ensure functionality is maintained
+- Use the development setup script (`./setup-dev.sh`) to ensure proper test environment
+- Run pre-commit hooks before committing: `pre-commit run --all-files`
+- Test both with and without API keys to verify fallback modes work correctly
+- Check that new custom exceptions are properly caught and logged in tests
 </testing_instructions>
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
 
