@@ -142,8 +142,16 @@ class MetaWebhookHandler:
             return is_valid
 
         except Exception as e:
-            logger.error("Error verifying webhook signature", error=str(e))
-            return False
+            logger.error(
+                "Webhook signature verification error",
+                error=str(e),
+                error_type=type(e).__name__,
+                webhook_type="meta",
+            )
+            raise WebhookError(
+                message=f"Error verifying webhook signature: {str(e)}",
+                webhook_type="meta",
+            )
 
     def extract_lead_data(self, webhook_payload: Dict[str, Any]) -> List[MetaLeadData]:
         """
@@ -646,4 +654,5 @@ async def handle_webhook(
 def get_webhook_handler() -> MetaWebhookHandler:
     """Get the global webhook handler instance."""
     return webhook_handler
+
 
