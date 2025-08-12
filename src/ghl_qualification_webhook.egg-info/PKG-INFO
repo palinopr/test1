@@ -1,0 +1,717 @@
+Metadata-Version: 2.4
+Name: ghl-qualification-webhook
+Version: 0.1.0
+Summary: AI-powered customer qualification webhook for Go High Level using LangGraph
+Classifier: Development Status :: 3 - Alpha
+Classifier: Intended Audience :: Developers
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Programming Language :: Python :: 3
+Classifier: Programming Language :: Python :: 3.9
+Classifier: Programming Language :: Python :: 3.10
+Classifier: Programming Language :: Python :: 3.11
+Classifier: Programming Language :: Python :: 3.12
+Requires-Python: >=3.9
+Description-Content-Type: text/markdown
+Requires-Dist: langgraph>=0.2.0
+Requires-Dist: langchain>=0.3.0
+Requires-Dist: langsmith>=0.1.0
+Requires-Dist: langchain-openai>=0.2.0
+Requires-Dist: fastapi>=0.104.0
+Requires-Dist: uvicorn[standard]>=0.24.0
+Requires-Dist: python-dotenv>=1.0.0
+Requires-Dist: requests>=2.31.0
+Requires-Dist: httpx>=0.25.0
+Requires-Dist: pydantic>=2.5.0
+Requires-Dist: structlog>=23.2.0
+Provides-Extra: dev
+Requires-Dist: pytest>=7.4.0; extra == "dev"
+Requires-Dist: pytest-asyncio>=0.21.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.12.0; extra == "dev"
+
+# GHL Customer Qualification Webhook
+
+AI-powered customer qualification system for Go High Level using LangGraph. This system automatically qualifies leads from Meta ads through intelligent conversations, creating personalized "wow moments" and seamlessly integrating with your GHL CRM.
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- Python 3.9+ installed
+- Go High Level account with API access
+- OpenAI API key
+- LangSmith account (optional, for tracing)
+
+### Installation
+
+1. **Clone and Setup**
+   ```bash
+   git clone <repository-url>
+   cd ghl-qualification-webhook
+   pip install -r requirements.txt
+   ```
+
+2. **Configure Environment**
+   ```bash
+   cp .env.example .env
+   # Edit .env with your API keys
+   ```
+
+3. **Run the Application**
+   ```bash
+   python -m src.main
+   ```
+
+4. **Verify Setup**
+   ```bash
+   curl http://localhost:8000/health
+   ```
+
+## 📋 Table of Contents
+
+- [System Overview](#system-overview)
+- [Architecture](#architecture)
+- [Setup Instructions](#setup-instructions)
+- [API Documentation](#api-documentation)
+- [Webhook Configuration](#webhook-configuration)
+- [Usage Examples](#usage-examples)
+- [Troubleshooting](#troubleshooting)
+- [Deployment](#deployment)
+- [Contributing](#contributing)
+
+## 🏗️ System Overview
+
+### The Complete Flow
+
+```
+Meta Ad → Go High Level → GHL Webhook → LangGraph Agent → Response via GHL Tools
+```
+
+1. **Lead Generation**: Meta ads generate leads and send them to Go High Level
+2. **Webhook Trigger**: GHL triggers webhook to our system when new contacts are created or messages received
+3. **AI Processing**: LangGraph qualification agent processes the interaction using OpenAI
+4. **Intelligent Response**: Agent responds through GHL tools (SMS, email, contact updates)
+5. **Qualification Tracking**: System tracks qualification status and conversation progress
+
+### Key Features
+
+- ✅ **Intelligent Qualification** - Multi-stage conversation flow with automatic scoring
+- ✅ **Personalized Responses** - Context-aware "wow moments" based on customer data
+- ✅ **GHL Integration** - Complete CRM integration with messaging, tagging, and notes
+- ✅ **Persistent Conversations** - State management across multiple interactions
+- ✅ **LangSmith Tracing** - Optional monitoring and debugging (with fallback)
+- ✅ **Production Ready** - Comprehensive error handling, logging, and health checks
+
+## 🏛️ Architecture
+
+### Core Components
+
+```
+┌─────────────────┐    ┌──────────────────┐    ┌─────────────────┐
+│   Go High       │    │   FastAPI        │    │   LangGraph     │
+│   Level         │───▶│   Webhook        │───▶│   Agent         │
+│                 │    │   Server         │    │                 │
+└─────────────────┘    └──────────────────┘    └─────────────────┘
+                                │                        │
+                                ▼                        ▼
+                       ┌──────────────────┐    ┌─────────────────┐
+                       │   Conversation   │    │   GHL Tools     │
+                       │   State Manager  │    │   Integration   │
+                       └──────────────────┘    └─────────────────┘
+```
+
+### Technology Stack
+
+- **FastAPI** - High-performance web framework for webhook endpoints
+- **LangGraph** - StateGraph for conversation flow management
+- **OpenAI GPT-4** - Language model for intelligent responses
+- **SQLite** - Persistent conversation state storage
+- **LangSmith** - Optional tracing and monitoring
+- **Docker** - Containerized deployment
+
+## 🛠️ Setup Instructions
+
+### 1. Environment Configuration
+
+Create `.env` file with required variables:
+
+```bash
+# Required - OpenAI for the qualification agent
+OPENAI_API_KEY=sk-your-openai-api-key
+
+# Required - Go High Level integration
+GHL_API_KEY=your-ghl-api-key
+GHL_WEBHOOK_VERIFY_TOKEN=your-webhook-verify-token
+
+# Optional - LangSmith tracing (system works without this)
+LANGSMITH_API_KEY=your-langsmith-api-key
+LANGSMITH_PROJECT=ghl-qualification-webhook
+
+# Application settings
+APP_HOST=0.0.0.0
+APP_PORT=8000
+LOG_LEVEL=INFO
+```
+
+### 2. Go High Level Setup
+
+1. **Get API Key**
+   - Go to GHL Settings → Integrations → API
+   - Create new API key with required scopes:
+     - `contacts.readonly`
+     - `contacts.write`
+     - `conversations.readonly`
+     - `conversations.write`
+
+2. **Configure Webhook**
+   - Go to GHL Settings → Integrations → Webhooks
+   - Add webhook URL: `https://your-domain.com/webhook/ghl`
+   - Select events: `ContactCreate`, `InboundMessage`, `ContactUpdate`
+   - Set verification token (use same value as `GHL_WEBHOOK_VERIFY_TOKEN`)
+
+### 3. OpenAI Setup
+
+1. **Get API Key**
+   - Visit [OpenAI Platform](https://platform.openai.com/api-keys)
+   - Create new API key
+   - Ensure you have sufficient credits
+
+2. **Model Access**
+   - System uses `gpt-4o-mini` by default
+   - Ensure your account has access to this model
+
+### 4. LangSmith Setup (Optional)
+
+1. **Create Account**
+   - Visit [LangSmith](https://smith.langchain.com/)
+   - Create account and get API key
+
+2. **Create Project**
+   - Create project named `ghl-qualification-webhook`
+   - Or set custom name in `LANGSMITH_PROJECT`
+
+**Note**: System works perfectly without LangSmith - it will automatically enable fallback mode.
+
+## 📡 API Documentation
+
+### Health Check Endpoints
+
+#### GET /health
+Basic health check for load balancers.
+
+**Response:**
+```
+OK
+```
+
+#### GET /health/detailed
+Comprehensive component status check.
+
+**Response:**
+```json
+{
+  "status": "healthy",
+  "components": {
+    "langsmith": {
+      "enabled": true,
+      "status": "healthy"
+    },
+    "ghl_api": {
+      "connected": true,
+      "status": "healthy"
+    },
+    "qualification_agent": {
+      "status": "healthy",
+      "model": "gpt-4o-mini"
+    },
+    "state_manager": {
+      "status": "healthy",
+      "database_accessible": true
+    }
+  }
+}
+```
+
+### Webhook Endpoints
+
+#### GET /webhook/ghl
+Webhook verification endpoint for GHL setup.
+
+**Query Parameters:**
+- `challenge` - Verification challenge from GHL
+- `verify_token` - Your webhook verification token
+
+#### POST /webhook/ghl
+Main webhook endpoint for GHL events.
+
+**Supported Events:**
+- `ContactCreate` - New leads from Meta ads
+- `InboundMessage` - Customer responses
+- `ContactUpdate` - Contact information changes
+
+### Management API
+
+#### POST /api/qualify
+Manual qualification endpoint for testing.
+
+**Request:**
+```json
+{
+  "contact_id": "ghl_contact_123",
+  "message": "Hi, I'm interested in automation services",
+  "customer_info": {
+    "firstName": "John",
+    "email": "john@example.com"
+  }
+}
+```
+
+#### GET /api/conversations
+Get active conversations.
+
+**Query Parameters:**
+- `limit` - Number of conversations to return (default: 50)
+
+#### GET /api/conversation/{thread_id}
+Get detailed conversation information.
+
+**Response:**
+```json
+{
+  "contact_id": "ghl_contact_123",
+  "qualification_status": "qualified",
+  "conversation_stage": "presentation",
+  "business_info": {
+    "team_size": 8,
+    "monthly_revenue": "$15,000"
+  },
+  "qualification_score": 12
+}
+```
+
+## 🔗 Webhook Configuration
+
+### GHL Webhook Setup
+
+1. **Webhook URL Configuration**
+   ```
+   URL: https://your-domain.com/webhook/ghl
+   Method: POST
+   Events: ContactCreate, InboundMessage, ContactUpdate
+   ```
+
+2. **Verification Token**
+   - Set in GHL webhook configuration
+   - Must match `GHL_WEBHOOK_VERIFY_TOKEN` in your `.env`
+
+3. **Event Types**
+
+   **ContactCreate** - Triggered when new leads come from Meta ads:
+   ```json
+   {
+     "type": "ContactCreate",
+     "contact": {
+       "id": "contact_123",
+       "firstName": "John",
+       "email": "john@example.com",
+       "source": "Meta Ad Campaign"
+     }
+   }
+   ```
+
+   **InboundMessage** - Customer responses:
+   ```json
+   {
+     "type": "InboundMessage",
+     "message": {
+       "contactId": "contact_123",
+       "body": "I'm interested in automation services"
+     }
+   }
+   ```
+
+### Testing Webhook
+
+```bash
+# Test webhook verification
+curl "https://your-domain.com/webhook/ghl?challenge=test123&verify_token=your_token"
+
+# Should return: test123
+```
+
+## 💡 Usage Examples
+
+### Example 1: New Lead from Meta Ad
+
+**Flow:**
+1. Customer fills out Meta ad form
+2. Lead goes to GHL
+3. GHL triggers `ContactCreate` webhook
+4. System creates conversation and sends initial message
+
+**Sample Interaction:**
+```
+Agent: "Hi John! Thanks for your interest in automation services. I'd love to learn more about your business. What industry are you in?"
+
+Customer: "I run an e-commerce business with about $15k monthly revenue."
+
+Agent: "That's fantastic! E-commerce has great automation opportunities. How many people are on your team currently?"
+```
+
+### Example 2: Qualification Conversation
+
+**Multi-turn conversation with automatic qualification:**
+
+```json
+{
+  "conversation_flow": [
+    {
+      "stage": "greeting",
+      "qualification_score": 0,
+      "customer": "Hi, interested in automation",
+      "agent": "Hi! What kind of business do you run?"
+    },
+    {
+      "stage": "discovery", 
+      "qualification_score": 5,
+      "customer": "E-commerce, $15k/month, 8 team members",
+      "agent": "Perfect size for automation! What are your biggest time-consuming tasks?"
+    },
+    {
+      "stage": "qualification",
+      "qualification_score": 12,
+      "customer": "Manual order processing, customer emails, inventory updates",
+      "agent": "Those are exactly what we automate! Are you ready to invest in the next 2-3 months?"
+    }
+  ]
+}
+```
+
+### Example 3: Creating Wow Moments
+
+**Personalized responses based on customer data:**
+
+```python
+# Customer mentioned Shopify store
+wow_moment = "I noticed you're using Shopify - we just helped another Shopify store reduce their order processing from 2 hours to 15 minutes daily!"
+
+# Customer from specific location  
+wow_moment = "Since you're in Austin, you might know [Local Business] - we helped them automate their customer onboarding last year."
+
+# Revenue-based personalization
+wow_moment = "At $15k monthly revenue, most of our clients see ROI within 3-4 months from time savings alone."
+```
+
+## 🔧 Troubleshooting
+
+### Common Issues
+
+#### 1. LangSmith Deployment Issues
+
+**Problem**: "INVALID_LICENSE" error
+```
+Solution:
+- Verify LangSmith subscription status
+- Check API key permissions
+- System will automatically use fallback mode if LangSmith unavailable
+```
+
+**Problem**: No traces appearing in LangSmith
+```
+Solution:
+- Check LANGSMITH_API_KEY is set correctly
+- Verify LANGSMITH_PROJECT exists
+- Check network connectivity to api.smith.langchain.com
+- System continues working without tracing
+```
+
+#### 2. GHL Integration Issues
+
+**Problem**: "Unauthorized - check GHL API key"
+```bash
+# Test GHL API connectivity
+curl -H "Authorization: Bearer $GHL_API_KEY" \
+     https://services.leadconnectorhq.com/contacts
+
+Solution:
+- Verify API key is correct
+- Check API key has required scopes
+- Ensure account has necessary permissions
+```
+
+**Problem**: Webhook verification fails
+```bash
+# Test webhook verification
+curl "https://your-domain.com/webhook/ghl?challenge=test&verify_token=$GHL_WEBHOOK_VERIFY_TOKEN"
+
+Solution:
+- Ensure webhook URL is publicly accessible
+- Verify HTTPS is used (required by GHL)
+- Check GHL_WEBHOOK_VERIFY_TOKEN matches GHL configuration
+```
+
+#### 3. OpenAI Integration Issues
+
+**Problem**: "OPENAI_API_KEY environment variable is required"
+```bash
+# Test OpenAI API
+curl -H "Authorization: Bearer $OPENAI_API_KEY" \
+     https://api.openai.com/v1/models
+
+Solution:
+- Verify API key is set in .env file
+- Check account has sufficient credits
+- Ensure model access (gpt-4o-mini)
+```
+
+#### 4. Conversation State Issues
+
+**Problem**: Conversations not persisting
+```bash
+# Check database permissions
+ls -la ./data/
+chmod 755 ./data/
+
+Solution:
+- Ensure data directory is writable
+- Check SQLite database file permissions
+- Verify DATABASE_URL is correct
+```
+
+### Debug Mode
+
+Enable debug mode for detailed logging:
+
+```bash
+# Set in .env file
+APP_DEBUG=true
+LOG_LEVEL=DEBUG
+
+# Or run with debug
+python -m src.main --debug
+```
+
+### Health Check Debugging
+
+```bash
+# Check component status
+curl http://localhost:8000/health/detailed | jq
+
+# Check specific component
+curl http://localhost:8000/health/detailed | jq '.components.ghl_api'
+```
+
+## 🚀 Deployment
+
+### Option 1: LangGraph Cloud (Recommended)
+
+```bash
+# Install CLI
+pip install langgraph-cli
+
+# Deploy
+langgraph deploy
+```
+
+### Option 2: Docker
+
+```bash
+# Using Docker Compose
+docker-compose up -d
+
+# Using Docker directly
+docker build -t ghl-webhook .
+docker run -d -p 8000:8000 --env-file .env ghl-webhook
+```
+
+### Option 3: Local Development
+
+```bash
+# Development server with auto-reload
+uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload
+```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for comprehensive deployment instructions and troubleshooting.
+
+## 📊 Monitoring
+
+### Key Metrics
+
+- **Health Status**: `/health/detailed`
+- **Active Conversations**: `/api/conversations`
+- **Qualification Success Rate**: Monitor qualified vs total leads
+- **Response Times**: Check agent processing times
+
+### Logging
+
+Structured JSON logging for production monitoring:
+
+```json
+{
+  "timestamp": "2024-01-15T10:30:00Z",
+  "level": "info",
+  "event": "Lead processed successfully",
+  "contact_id": "ghl_123",
+  "qualification_status": "qualified"
+}
+```
+
+### LangSmith Tracing (Optional)
+
+When enabled, provides detailed conversation tracing:
+- Agent decision making
+- Tool usage patterns
+- Performance metrics
+- Error tracking
+
+## 🔒 Security
+
+### API Security
+- Environment variable management
+- Webhook signature verification
+- HTTPS enforcement
+- Rate limiting support
+
+### Data Security
+- Customer data encryption
+- Secure credential storage
+- GDPR compliance considerations
+- Automatic data cleanup
+
+## 🧪 Testing
+
+### Run All Tests
+
+```bash
+# Test individual components
+python test_langsmith_config.py
+python test_ghl_tools.py
+python test_qualification_agent.py
+python test_conversation_state.py
+python test_main_app.py
+```
+
+### Test Webhook Flow
+
+```bash
+# Test with sample payload
+curl -X POST http://localhost:8000/webhook/ghl \
+  -H "Content-Type: application/json" \
+  -d @examples/sample_ghl_webhook_payloads.json
+```
+
+### Manual Qualification Test
+
+```bash
+curl -X POST http://localhost:8000/api/qualify \
+  -H "Content-Type: application/json" \
+  -d '{
+    "contact_id": "test_123",
+    "message": "Hi, interested in automation",
+    "customer_info": {"firstName": "John"}
+  }'
+```
+
+## 📁 Project Structure
+
+```
+ghl-qualification-webhook/
+├── src/
+│   ├── agents/
+│   │   └── qualification_agent.py    # LangGraph qualification agent
+│   ├── config/
+│   │   └── langsmith_config.py       # LangSmith configuration
+│   ├── state/
+│   │   └── conversation_state.py     # State management
+│   ├── tools/
+│   │   └── ghl_tools.py             # GHL API integration
+│   ├── webhooks/
+│   │   └── meta_webhook.py          # Webhook handlers
+│   └── main.py                      # FastAPI application
+├── examples/
+│   ├── sample_ghl_webhook_payloads.json
+│   ├── sample_ghl_api_responses.json
+│   └── sample_conversation_flows.json
+├── requirements.txt                 # Python dependencies
+├── pyproject.toml                  # Project configuration
+├── Dockerfile                      # Container configuration
+├── docker-compose.yml             # Local development
+├── langgraph.json                 # LangGraph Cloud config
+├── DEPLOYMENT.md                  # Deployment guide
+└── README.md                      # This file
+```
+
+## 🤝 Contributing
+
+### Development Setup
+
+1. **Fork and Clone**
+   ```bash
+   git clone <your-fork>
+   cd ghl-qualification-webhook
+   ```
+
+2. **Install Dependencies**
+   ```bash
+   pip install -r requirements.txt
+   pip install -e .
+   ```
+
+3. **Run Tests**
+   ```bash
+   python -m pytest
+   ```
+
+### Code Style
+
+- Use Black for formatting: `black src/`
+- Use isort for imports: `isort src/`
+- Follow PEP 8 guidelines
+- Add type hints where possible
+
+### Pull Request Process
+
+1. Create feature branch
+2. Add tests for new functionality
+3. Ensure all tests pass
+4. Update documentation
+5. Submit pull request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🆘 Support
+
+### Getting Help
+
+1. **Check Documentation**
+   - Review this README
+   - Check [DEPLOYMENT.md](DEPLOYMENT.md)
+   - Review example files in `examples/`
+
+2. **Debug Steps**
+   - Check `/health/detailed` endpoint
+   - Review application logs
+   - Test individual components
+   - Verify environment variables
+
+3. **Common Solutions**
+   - Restart application
+   - Check API key permissions
+   - Verify webhook configuration
+   - Review network connectivity
+
+### Resources
+
+- [LangGraph Documentation](https://langchain-ai.github.io/langgraph/)
+- [Go High Level API Docs](https://highlevel.stoplight.io/)
+- [OpenAI API Documentation](https://platform.openai.com/docs)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+
+---
+
+**Built with ❤️ using LangGraph, FastAPI, and OpenAI**
+
+*Transform your lead qualification process with AI-powered conversations that create genuine connections and drive results.*
+
