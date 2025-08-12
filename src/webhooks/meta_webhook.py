@@ -214,9 +214,17 @@ class MetaWebhookHandler:
             )
 
         except Exception as e:
-            logger.error("Error extracting lead data", error=str(e))
-            raise HTTPException(
-                status_code=500, detail=f"Lead extraction error: {str(e)}"
+            logger.error(
+                "Webhook lead data extraction error",
+                error=str(e),
+                error_type=type(e).__name__,
+                webhook_type="meta",
+                payload_size=len(str(webhook_payload)),
+            )
+            raise WebhookError(
+                message=f"Error extracting lead data: {str(e)}",
+                webhook_type="meta",
+                payload_data=webhook_payload,
             )
 
     def normalize_lead_fields(self, field_data: List[Dict[str, Any]]) -> Dict[str, str]:
@@ -654,5 +662,6 @@ async def handle_webhook(
 def get_webhook_handler() -> MetaWebhookHandler:
     """Get the global webhook handler instance."""
     return webhook_handler
+
 
 
