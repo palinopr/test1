@@ -31,18 +31,27 @@ This is a FastAPI-based webhook system for GHL (Go High Level) customer qualific
 **Main Application Flow**: Meta Ad → Go High Level → GHL Webhook → LangGraph Agent → Response via GHL Tools
 
 **Core Components**:
-- **FastAPI Server** (`src/main.py`): Main application server with webhook endpoints, health checks, and API routes
+- **FastAPI Server** (`src/main.py`): Main application server with webhook endpoints, comprehensive health checks, and API routes
 - **Qualification Agent** (`src/agents/`): LangGraph StateGraph implementation for multi-stage customer qualification conversations
 - **GHL Integration** (`src/tools/`): Comprehensive Go High Level API wrapper tools for messaging, contact management, and CRM operations
 - **State Management** (`src/state/`): Persistent conversation state using SQLite database with qualification tracking
 - **Webhook Handlers** (`src/webhooks/`): Meta webhook integration for processing inbound messages and contact events
-- **Configuration** (`src/config/`): LangSmith tracing setup with fallback support and structured logging configuration
+- **Configuration** (`src/config/`): Environment validation, LangSmith tracing setup with fallback support, and structured logging configuration
+- **Exception Handling** (`src/exceptions.py`): Custom exception classes for consistent error handling across the application
 
 **Key Files**:
 - `conversation_states.db`: SQLite database for persistent conversation state
 - `langgraph.json`: LangGraph Cloud deployment configuration
+- `setup-dev.sh`: Development environment setup script
+- `.pre-commit-config.yaml`: Pre-commit hooks for code quality
 - `examples/`: Sample API responses, webhook payloads, and conversation flows
 - Root-level test files: Custom test scripts for each major component
+
+**Development Tools**:
+- **Code Quality**: Black formatter (line-length 88), isort for import sorting, pre-commit hooks
+- **Testing**: Custom test scripts with fallback modes for missing API keys
+- **Configuration**: Comprehensive environment variable validation and connectivity testing
+- **Error Handling**: Structured exception hierarchy with detailed logging
 
 **Deployment Support**: Docker, docker-compose for local development, and LangGraph Cloud for production deployment.
 </repository_structure>
@@ -96,4 +105,5 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
