@@ -1,0 +1,93 @@
+version: '3.8'
+
+services:
+  ghl-qualification-webhook:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ghl-qualification-webhook
+    ports:
+      - "${APP_PORT:-8000}:8000"
+    environment:
+      # Application Configuration
+      - APP_HOST=0.0.0.0
+      - APP_PORT=8000
+      - APP_DEBUG=${APP_DEBUG:-false}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+      
+      # LangSmith Configuration
+      - LANGSMITH_API_KEY=${LANGSMITH_API_KEY}
+      - LANGSMITH_PROJECT=${LANGSMITH_PROJECT:-ghl-qualification-webhook}
+      - LANGSMITH_TRACING=${LANGSMITH_TRACING:-true}
+      - LANGSMITH_ENDPOINT=${LANGSMITH_ENDPOINT:-https://api.smith.langchain.com}
+      
+      # OpenAI Configuration
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      
+      # Go High Level Configuration
+      - GHL_API_KEY=${GHL_API_KEY}
+      - GHL_BASE_URL=${GHL_BASE_URL:-https://services.leadconnectorhq.com}
+      - GHL_WEBHOOK_VERIFY_TOKEN=${GHL_WEBHOOK_VERIFY_TOKEN}
+      
+      # Database Configuration
+      - DATABASE_URL=sqlite:///./data/conversation_states.db
+      
+      # Security Configuration
+      - SECRET_KEY=${SECRET_KEY:-change-this-in-production}
+      - TRUSTED_HOSTS=${TRUSTED_HOSTS:-*}
+    
+    volumes:
+      # Persistent data storage
+      - ./data:/app/data
+      - ./logs:/app/logs
+    
+    restart: unless-stopped
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    networks:
+      - ghl-network
+
+  # Optional: Redis for enhanced caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: ghl-redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - ghl-network
+
+  # Optional: PostgreSQL for production database (uncomment if needed)
+  # postgres:
+  #   image: postgres:15-alpine
+  #   container_name: ghl-postgres
+  #   environment:
+  #     - POSTGRES_DB=ghl_qualification
+  #     - POSTGRES_USER=ghl_user
+  #     - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-change-this-password}
+  #   ports:
+  #     - "5432:5432"
+  #   volumes:
+  #     - postgres_data:/var/lib/postgresql/data
+  #   restart: unless-stopped
+  #   networks:
+  #     - ghl-network
+
+networks:
+  ghl-network:
+    driver: bridge
+
+volumes:
+  # Uncomment if using optional services
+  # redis_data:
+  # postgres_data:
+  data:
+  logs:
