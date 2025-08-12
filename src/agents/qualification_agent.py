@@ -274,7 +274,7 @@ class CustomerQualificationAgent:
         # For now, we'll just pass through since the main response is generated in the agent node
         return {}
     
-    def _create_system_prompt(self, stage: str, contact_info: Dict[str, Any], state: QualificationState) -> str:
+    def _create_system_prompt(self, stage: str, contact_info: Optional[Dict[str, Any]], state: QualificationState) -> str:
         """Create a dynamic system prompt based on conversation stage and context."""
         
         # Base personality and role
