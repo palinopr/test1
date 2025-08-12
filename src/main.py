@@ -153,7 +153,7 @@ async def detailed_health_check():
     try:
         config_validator = get_config_validator()
         health_status = await config_validator.get_comprehensive_health_status()
-        
+
         # Add LangSmith configuration status
         langsmith_config = get_langsmith_config()
         health_status["components"] = health_status.get("components", {})
@@ -161,11 +161,13 @@ async def detailed_health_check():
             "enabled": langsmith_config.is_enabled,
             "fallback_mode": langsmith_config.fallback_mode,
             "status": "healthy" if not langsmith_config.fallback_mode else "degraded",
-            "project_name": langsmith_config.project_name if langsmith_config.is_enabled else None,
+            "project_name": (
+                langsmith_config.project_name if langsmith_config.is_enabled else None
+            ),
         }
-        
+
         return JSONResponse(content=health_status)
-        
+
     except Exception as e:
         logger.error("Error in detailed health check", error=str(e))
         return JSONResponse(
@@ -173,12 +175,10 @@ async def detailed_health_check():
                 "status": "error",
                 "timestamp": None,
                 "error": str(e),
-                "message": "Health check system encountered an error"
+                "message": "Health check system encountered an error",
             },
-            status_code=500
+            status_code=500,
         )
-
-
 
 
 # GHL Webhook Endpoints (Corrected Flow)
@@ -585,7 +585,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-
-

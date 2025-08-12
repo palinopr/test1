@@ -115,7 +115,7 @@ class ConfigurationValidator:
     def validate_environment_variables(self) -> Dict[str, Any]:
         """
         Validate all required environment variables.
-        
+
         Returns:
             Dict containing validation results and missing/invalid variables.
         """
@@ -223,7 +223,7 @@ class ConfigurationValidator:
     async def test_openai_connectivity(self) -> Dict[str, Any]:
         """
         Test OpenAI API connectivity and authentication.
-        
+
         Returns:
             Dict containing connectivity test results.
         """
@@ -277,7 +277,7 @@ class ConfigurationValidator:
     async def test_ghl_connectivity(self) -> Dict[str, Any]:
         """
         Test Go High Level API connectivity and authentication.
-        
+
         Returns:
             Dict containing connectivity test results.
         """
@@ -338,7 +338,7 @@ class ConfigurationValidator:
     def test_database_connectivity(self) -> Dict[str, Any]:
         """
         Test SQLite database connectivity and basic operations.
-        
+
         Returns:
             Dict containing database connectivity test results.
         """
@@ -411,7 +411,9 @@ class ConfigurationValidator:
             error_details = []
             if missing_required:
                 missing_names = [var["name"] for var in missing_required]
-                error_details.append(f"Missing required variables: {', '.join(missing_names)}")
+                error_details.append(
+                    f"Missing required variables: {', '.join(missing_names)}"
+                )
 
             if invalid_values:
                 invalid_details = [
@@ -435,7 +437,7 @@ class ConfigurationValidator:
     async def get_comprehensive_health_status(self) -> Dict[str, Any]:
         """
         Get comprehensive health status including all connectivity tests.
-        
+
         Returns:
             Dict containing complete system health information.
         """
