@@ -172,19 +172,47 @@ class GHLAPIClient:
                     success=False, error=error_message, status_code=response.status_code
                 )
 
-        except httpx.TimeoutException:
-            return GHLResponse(
-                success=False, error="Request timeout - GHL API may be slow"
+        except httpx.TimeoutException as e:
+            error_msg = "Request timeout - GHL API may be slow"
+            logger.error(
+                "GHL API timeout error",
+                error=str(e),
+                api_endpoint=endpoint,
+                timeout_duration=timeout,
+            )
+            raise GHLAPIError(
+                message=error_msg,
+                api_endpoint=endpoint,
+                contact_id=data.get("contactId") if data else None,
             )
 
-        except httpx.ConnectError:
-            return GHLResponse(
-                success=False, error="Connection error - check internet connectivity"
+        except httpx.ConnectError as e:
+            error_msg = "Connection error - check internet connectivity"
+            logger.error(
+                "GHL API connection error",
+                error=str(e),
+                api_endpoint=endpoint,
+                base_url=self.base_url,
+            )
+            raise GHLAPIError(
+                message=error_msg,
+                api_endpoint=endpoint,
+                contact_id=data.get("contactId") if data else None,
             )
 
         except Exception as e:
-            logger.error("Unexpected error in GHL API request", error=str(e))
-            return GHLResponse(success=False, error=f"Unexpected error: {str(e)}")
+            error_msg = f"Unexpected error in GHL API request: {str(e)}"
+            logger.error(
+                "Unexpected GHL API error",
+                error=str(e),
+                api_endpoint=endpoint,
+                error_type=type(e).__name__,
+            )
+            raise GHLAPIError(
+                message=error_msg,
+                api_endpoint=endpoint,
+                contact_id=data.get("contactId") if data else None,
+            )
 
 
 # Global GHL configuration
@@ -577,4 +605,5 @@ async def test_ghl_connection() -> Dict[str, Any]:
             "status_code": response.status_code,
             "has_api_key": bool(ghl_config.api_key),
         }
+
 
