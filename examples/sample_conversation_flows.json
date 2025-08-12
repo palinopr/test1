@@ -1,0 +1,211 @@
+{
+  "successful_qualification_flow": {
+    "description": "Complete conversation flow from initial contact to qualified lead",
+    "conversation": [
+      {
+        "stage": "greeting",
+        "customer_message": "Hi! I saw your ad about automation services. I'm interested in learning more.",
+        "agent_response": "Hi there! Thanks for reaching out about our automation services. I'd love to help you streamline your business operations. Could you tell me a bit about your business and what you do?",
+        "qualification_status": "initial",
+        "tools_used": ["send_message"],
+        "context_updates": {
+          "conversation_stage": "greeting",
+          "customer_interest": "automation services"
+        }
+      },
+      {
+        "stage": "discovery",
+        "customer_message": "I run an e-commerce business. We're doing about $15k per month in revenue, but we're spending way too much time on manual order processing and customer service emails.",
+        "agent_response": "That's fantastic revenue! E-commerce businesses often have great automation opportunities. Manual order processing and customer service can definitely eat up a lot of time. How many people are on your team currently?",
+        "qualification_status": "qualifying",
+        "tools_used": ["send_message", "create_contact_note"],
+        "context_updates": {
+          "conversation_stage": "discovery",
+          "business_info": {
+            "industry": "e-commerce",
+            "monthly_revenue": "$15,000",
+            "pain_points": ["manual order processing", "customer service emails"]
+          },
+          "qualification_score": 5
+        }
+      },
+      {
+        "stage": "qualification",
+        "customer_message": "We have 8 people on the team. Everyone is always busy with these repetitive tasks. We're looking to invest in automation soon, maybe in the next 2-3 months.",
+        "agent_response": "Perfect! With 8 team members and $15k monthly revenue, you're at an ideal size for automation. The fact that you're ready to invest in the next 2-3 months is great timing. Are you the decision maker for this type of investment, or would others need to be involved?",
+        "qualification_status": "qualified",
+        "tools_used": ["send_message", "add_contact_tag", "update_contact"],
+        "context_updates": {
+          "conversation_stage": "qualification",
+          "business_info": {
+            "team_size": 8,
+            "timeline": "2-3 months"
+          },
+          "qualification_score": 12,
+          "tags_added": ["qualified", "high-priority"]
+        }
+      },
+      {
+        "stage": "presentation",
+        "customer_message": "Yes, I make the decisions for the business. What kind of automation solutions do you offer?",
+        "agent_response": "Excellent! As the decision maker, you can move quickly on this. For e-commerce businesses like yours, we typically automate order processing workflows, customer service responses, inventory management, and follow-up sequences. Based on what you've shared, I estimate we could save your team 15-20 hours per week. Would you be interested in a brief demo to see how this would work specifically for your business?",
+        "qualification_status": "qualified",
+        "tools_used": ["send_message", "create_contact_note"],
+        "context_updates": {
+          "conversation_stage": "presentation",
+          "qualification_data": {
+            "decision_maker": true,
+            "automation_interest": "high"
+          },
+          "wow_moment_delivered": true
+        }
+      },
+      {
+        "stage": "closing",
+        "customer_message": "That sounds amazing! Yes, I'd love to see a demo. When can we schedule that?",
+        "agent_response": "Perfect! I'm excited to show you what's possible. I'll have our automation specialist reach out within the next 24 hours to schedule a personalized demo. In the meantime, I'll send you a quick case study of another e-commerce business we helped - they went from 40 hours of manual work per week to just 5 hours. Sound good?",
+        "qualification_status": "completed",
+        "tools_used": ["send_message", "add_contact_tag", "create_contact_note"],
+        "context_updates": {
+          "conversation_stage": "closing",
+          "next_steps": "demo_scheduled",
+          "follow_up_scheduled": true,
+          "tags_added": ["demo-requested", "hot-lead"]
+        }
+      }
+    ],
+    "final_qualification_summary": {
+      "status": "qualified",
+      "score": 15,
+      "business_info": {
+        "industry": "e-commerce",
+        "team_size": 8,
+        "monthly_revenue": "$15,000",
+        "pain_points": ["manual order processing", "customer service emails"]
+      },
+      "qualification_data": {
+        "timeline": "2-3 months",
+        "decision_maker": true,
+        "budget_discussed": false,
+        "automation_readiness": 9
+      },
+      "next_steps": "Demo scheduled with automation specialist"
+    }
+  },
+
+  "not_qualified_flow": {
+    "description": "Conversation flow with a lead that doesn't qualify",
+    "conversation": [
+      {
+        "stage": "greeting",
+        "customer_message": "Hi, I saw your automation ad. What do you do?",
+        "agent_response": "Hi! Thanks for reaching out. We help businesses automate their repetitive processes to save time and increase efficiency. What kind of business do you run?",
+        "qualification_status": "initial",
+        "tools_used": ["send_message"]
+      },
+      {
+        "stage": "discovery",
+        "customer_message": "I'm just starting out. It's just me working from home, making maybe $500 a month right now.",
+        "agent_response": "That's great that you're getting started! Building a business from the ground up takes dedication. At your current stage, you might benefit more from focusing on growing your revenue first. Automation typically makes the most sense when you have more consistent processes and higher volume. I'd recommend revisiting automation once you're doing $3-5k monthly. In the meantime, would you like some free resources on scaling your business?",
+        "qualification_status": "not_qualified",
+        "tools_used": ["send_message", "add_contact_tag", "create_contact_note"],
+        "context_updates": {
+          "business_info": {
+            "team_size": 1,
+            "monthly_revenue": "$500"
+          },
+          "qualification_score": 1,
+          "tags_added": ["not-qualified", "early-stage"]
+        }
+      }
+    ],
+    "final_qualification_summary": {
+      "status": "not_qualified",
+      "score": 1,
+      "reason": "Too early stage - low revenue, single person operation",
+      "next_steps": "Provided free resources, follow up in 6 months"
+    }
+  },
+
+  "budget_qualification_flow": {
+    "description": "Conversation flow focusing on budget qualification",
+    "conversation": [
+      {
+        "stage": "qualification",
+        "customer_message": "We're interested in automation but need to understand the investment required.",
+        "agent_response": "Absolutely! Understanding the investment is important. Our automation solutions typically range from $3,000 to $15,000 depending on complexity, with most e-commerce businesses like yours investing around $5,000-$8,000. The ROI is usually 3-5x within the first year through time savings and increased efficiency. What kind of budget range were you considering for this type of business improvement?",
+        "qualification_status": "qualifying",
+        "tools_used": ["send_message"],
+        "context_updates": {
+          "budget_discussion": true
+        }
+      },
+      {
+        "stage": "qualification",
+        "customer_message": "That's in our range. We were thinking around $5,000-$10,000 if it can really deliver those results.",
+        "agent_response": "Perfect! That budget range aligns well with what we can deliver for your business size. With your $15k monthly revenue and 8-person team, a $5k-$10k investment would typically pay for itself within 3-4 months through the time savings alone. Plus, the improved efficiency often leads to revenue growth. Should we schedule a detailed consultation to map out exactly what this would look like for your specific processes?",
+        "qualification_status": "qualified",
+        "tools_used": ["send_message", "update_contact", "add_contact_tag"],
+        "context_updates": {
+          "qualification_data": {
+            "budget_range": "$5k-10k",
+            "budget_qualified": true
+          },
+          "qualification_score": 14,
+          "tags_added": ["budget-qualified"]
+        }
+      }
+    ]
+  },
+
+  "objection_handling_flow": {
+    "description": "Conversation flow handling common objections",
+    "conversation": [
+      {
+        "stage": "qualification",
+        "customer_message": "I'm interested but we've tried automation before and it didn't work out. We wasted money on tools that didn't integrate properly.",
+        "agent_response": "I completely understand your concern - that's actually one of the most common issues we help solve. Many businesses try to piece together different tools that don't talk to each other. Our approach is different - we create custom integrations that work specifically with your existing systems. For example, with your Shopify store, we'd build direct connections to your email platform, inventory system, and customer service tools. Would you be open to seeing how we'd approach your specific tech stack differently than what you tried before?",
+        "qualification_status": "qualifying",
+        "tools_used": ["send_message", "create_contact_note"],
+        "context_updates": {
+          "objections": ["previous_bad_experience", "integration_concerns"],
+          "objection_handled": true
+        }
+      },
+      {
+        "stage": "qualification",
+        "customer_message": "That does sound different. What makes you confident it would work for us?",
+        "agent_response": "Great question! We've specifically helped 47 e-commerce businesses in the $10k-$50k monthly revenue range, and 94% saw positive ROI within 90 days. More importantly, we don't just build and leave - we include 6 months of optimization and support to ensure everything works smoothly. Plus, we start with a small pilot automation so you can see results before making a larger investment. Would a pilot approach feel more comfortable given your previous experience?",
+        "qualification_status": "qualified",
+        "tools_used": ["send_message", "add_contact_tag"],
+        "context_updates": {
+          "social_proof_provided": true,
+          "risk_mitigation_offered": true,
+          "tags_added": ["objection-handled", "pilot-interested"]
+        }
+      }
+    ]
+  },
+
+  "wow_moment_examples": {
+    "description": "Examples of creating 'wow moments' through personalization",
+    "examples": [
+      {
+        "context": "Customer mentioned Shopify store",
+        "wow_moment": "I noticed you're using Shopify - we actually just helped another Shopify store owner reduce their order processing time from 2 hours to 15 minutes per day. They went from manually checking orders, updating inventory, and sending shipping notifications to having it all happen automatically. With your volume, that could save you about 10 hours per week."
+      },
+      {
+        "context": "Customer from Austin, TX",
+        "wow_moment": "Since you're in Austin, you might know [Local Business Name] - we helped them automate their customer onboarding process last year. They're now handling 3x more customers with the same team size. Austin has such a great entrepreneurial community!"
+      },
+      {
+        "context": "Customer mentioned team of 8 people",
+        "wow_moment": "With 8 team members, you're at the perfect size for automation. We typically see businesses your size save 15-25 hours per week across the team - that's like getting 3-4 extra days of productivity every week. Imagine what your team could accomplish with that extra time!"
+      },
+      {
+        "context": "Customer mentioned $15k monthly revenue",
+        "wow_moment": "At $15k monthly revenue, you're in our sweet spot. Most of our clients at your revenue level see their automation investment pay for itself within 3-4 months, then it's pure profit from the time savings. One client went from $15k to $25k monthly revenue in 6 months just from the efficiency gains."
+      }
+    ]
+  }
+}
