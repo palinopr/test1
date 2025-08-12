@@ -23,6 +23,14 @@ When developing code for this repository, follow these essential practices:
 - **Development Setup**: Use the provided `setup-dev.sh` script to automatically set up the development environment with all required dependencies and tools.
 
 - **Code Quality**: Run pre-commit hooks before committing code. Use `pre-commit run --all-files` to check all files at once.
+
+- **Common Commands**: Essential commands for daily development:
+  - `./setup-dev.sh` - Set up development environment
+  - `python -m pytest` - Run all tests
+  - `python src/main.py` - Start the application locally
+  - `black src/` - Format code
+  - `isort src/` - Sort imports
+  - `pre-commit run --all-files` - Run all quality checks
 </general_rules>
 
 <repository_structure>
@@ -148,6 +156,7 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
 
