@@ -84,9 +84,29 @@ This is a FastAPI-based webhook system for GHL (Go High Level) customer qualific
 **Development Dependencies** (in `pyproject.toml`):
 - pytest, pytest-asyncio for testing
 - black, isort for code formatting
+- pre-commit for git hooks
 - Additional dev tools for code quality
 
-**Environment Configuration**: All sensitive configuration is managed through environment variables. Use `.env.example` as a template and ensure all required API keys are properly configured before running the application.
+**Environment Configuration**: 
+- All sensitive configuration is managed through environment variables
+- Use `.env.example` as a template for required variables
+- The application includes comprehensive environment validation on startup
+- Use `/health/detailed` endpoint to verify configuration and connectivity
+- Configuration validation checks for 12+ environment variables with proper defaults and type validation
+
+**Required Environment Variables**:
+- `OPENAI_API_KEY`: OpenAI API authentication
+- `GHL_API_KEY`: Go High Level API authentication  
+- `META_WEBHOOK_VERIFY_TOKEN`: Meta webhook verification
+- `META_WEBHOOK_SECRET`: Meta webhook security
+- `SECRET_KEY`: Application security key
+
+**Optional Environment Variables** (with defaults):
+- `APP_HOST`, `APP_PORT`, `APP_DEBUG`: Application server configuration
+- `LOG_LEVEL`: Logging configuration
+- `DATABASE_URL`: SQLite database location
+- `GHL_BASE_URL`: Go High Level API base URL
+- `LANGSMITH_*`: LangSmith tracing configuration
 </dependencies_and_installation>
 
 <testing_instructions>
@@ -113,6 +133,7 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
 
 
 
