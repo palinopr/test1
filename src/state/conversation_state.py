@@ -50,7 +50,7 @@ class CustomerInfo:
     company_name: Optional[str] = None
     job_title: Optional[str] = None
     source: Optional[str] = None
-    custom_fields: Dict[str, Any] = None
+    custom_fields: Optional[Dict[str, Any]] = None
     
     def __post_init__(self):
         if self.custom_fields is None:
@@ -73,8 +73,8 @@ class BusinessInfo:
     team_size: Optional[int] = None
     monthly_revenue: Optional[str] = None
     business_type: Optional[str] = None
-    current_tools: List[str] = None
-    pain_points: List[str] = None
+    current_tools: Optional[List[str]] = None
+    pain_points: Optional[List[str]] = None
     automation_experience: Optional[str] = None
     
     def __post_init__(self):
@@ -103,7 +103,7 @@ class QualificationData:
     decision_maker: Optional[bool] = None
     automation_readiness: Optional[int] = None  # 1-10 scale
     fit_score: Optional[int] = None  # 1-10 scale
-    notes: List[str] = None
+    notes: Optional[List[str]] = None
     
     def __post_init__(self):
         if self.notes is None:
@@ -130,9 +130,9 @@ class ConversationMetrics:
     response_time_avg: float = 0.0
     engagement_score: float = 0.0
     sentiment_score: float = 0.0
-    topics_discussed: List[str] = None
+    topics_discussed: Optional[List[str]] = None
     questions_asked: int = 0
-    tools_used: List[str] = None
+    tools_used: Optional[List[str]] = None
     
     def __post_init__(self):
         if self.topics_discussed is None:
@@ -198,7 +198,8 @@ class ConversationState:
             if hasattr(self.customer_info, key):
                 setattr(self.customer_info, key, value)
             elif key == 'custom_fields' and isinstance(value, dict):
-                self.customer_info.custom_fields.update(value)
+                if self.customer_info.custom_fields is not None:
+                    self.customer_info.custom_fields.update(value)
         
         self.last_activity = datetime.utcnow()
         logger.info("Customer info updated", thread_id=self.thread_id, updates=list(updates.keys()))
@@ -225,9 +226,10 @@ class ConversationState:
             if hasattr(self.qualification_data, key):
                 if key == 'notes' and isinstance(value, list):
                     # Merge notes
-                    for note in value:
-                        if note not in self.qualification_data.notes:
-                            self.qualification_data.notes.append(note)
+                    if self.qualification_data.notes is not None:
+                        for note in value:
+                            if note not in self.qualification_data.notes:
+                                self.qualification_data.notes.append(note)
                 else:
                     setattr(self.qualification_data, key, value)
         
@@ -266,8 +268,9 @@ class ConversationState:
                 score += 2
         
         # Pain points (automation readiness)
-        pain_point_score = min(len(self.business_info.pain_points), 5)
-        score += pain_point_score
+        if self.business_info.pain_points is not None:
+            pain_point_score = min(len(self.business_info.pain_points), 5)
+            score += pain_point_score
         
         # Budget discussion
         if self.qualification_data.budget_range:
@@ -307,7 +310,7 @@ class ConversationState:
         
         # Stage progression logic
         if current_stage == ConversationStage.GREETING:
-            if len(self.business_info.pain_points) > 0:
+            if self.business_info.pain_points is not None and len(self.business_info.pain_points) > 0:
                 self.conversation_stage = ConversationStage.DISCOVERY
         
         elif current_stage == ConversationStage.DISCOVERY:
@@ -337,13 +340,13 @@ class ConversationState:
         
         return self.conversation_stage
     
-    def update_metrics(self, message_count_delta: int = 0, tools_used: List[str] = None) -> None:
+    def update_metrics(self, message_count_delta: int = 0, tools_used: Optional[List[str]] = None) -> None:
         """Update conversation metrics."""
         self.metrics.message_count += message_count_delta
         
         if tools_used:
             for tool in tools_used:
-                if tool not in self.metrics.tools_used:
+                if self.metrics.tools_used is not None and tool not in self.metrics.tools_used:
                     self.metrics.tools_used.append(tool)
         
         # Calculate engagement score based on message count and stage progression
