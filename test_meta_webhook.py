@@ -260,14 +260,14 @@ async def main():
     """Run all webhook tests."""
     print("🚀 Starting Meta Webhook Integration Tests")
     
-    # Run tests
-    tests = [
-        test_webhook_handler(),
-        asyncio.create_task(asyncio.coroutine(test_webhook_models)()),
-        asyncio.create_task(asyncio.coroutine(test_webhook_endpoints)())
-    ]
+    # Run async test
+    webhook_result = await test_webhook_handler()
     
-    results = await asyncio.gather(*tests, return_exceptions=True)
+    # Run sync tests
+    models_result = test_webhook_models()
+    endpoints_result = test_webhook_endpoints()
+    
+    results = [webhook_result, models_result, endpoints_result]
     
     # Summary
     print("\n" + "=" * 50)
@@ -307,3 +307,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+
