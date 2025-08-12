@@ -1,0 +1,53 @@
+# Pre-commit configuration for GHL Customer Qualification Webhook
+# This configuration automatically runs Black formatter and isort on commit
+# Configuration matches settings in pyproject.toml (line-length 88, black profile for isort)
+
+repos:
+  # Black code formatter
+  - repo: https://github.com/psf/black
+    rev: 23.12.1
+    hooks:
+      - id: black
+        language_version: python3
+        args: [--line-length=88]
+        files: ^src/.*\.py$
+
+  # isort import sorting
+  - repo: https://github.com/pycqa/isort
+    rev: 5.13.2
+    hooks:
+      - id: isort
+        args: [--profile=black, --line-length=88]
+        files: ^src/.*\.py$
+
+  # Additional code quality checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.5.0
+    hooks:
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+        files: ^src/.*\.py$
+      
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+        files: ^src/.*\.py$
+      
+      # Check for merge conflicts
+      - id: check-merge-conflict
+      
+      # Check Python syntax
+      - id: check-ast
+        files: ^src/.*\.py$
+      
+      # Check for large files (>500kb)
+      - id: check-added-large-files
+        args: [--maxkb=500]
+
+  # Python-specific checks
+  - repo: https://github.com/pre-commit/pygrep-hooks
+    rev: v1.10.0
+    hooks:
+      # Check for Python debugging statements
+      - id: python-check-blanket-noqa
+      - id: python-check-blanket-type-ignore
+      - id: python-no-log-warn
