@@ -531,10 +531,18 @@ Use these tools strategically to enhance the conversation and track progress.
             }
 
         except Exception as e:
+            error_msg = f"Error getting qualification summary: {str(e)}"
             logger.error(
-                "Error getting qualification summary", error=str(e), thread_id=thread_id
+                "Qualification summary retrieval error",
+                error=str(e),
+                thread_id=thread_id,
+                error_type=type(e).__name__,
             )
-            return {"error": str(e)}
+            raise QualificationError(
+                message=error_msg,
+                thread_id=thread_id,
+                conversation_stage="summary_error",
+            )
 
 
 # Global agent instance
@@ -569,5 +577,6 @@ async def qualify_customer(
     """
     agent = get_qualification_agent()
     return await agent.process_message(message, contact_id, contact_info, thread_id)
+
 
 
