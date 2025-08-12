@@ -31,6 +31,7 @@ from .config.langsmith_config import (
     initialize_langsmith,
     setup_logging,
 )
+from .config.validation import get_config_validator
 from .exceptions import ConfigurationError, QualificationError
 from .state.conversation_state import get_state_manager
 from .tools.ghl_tools import test_ghl_connection
@@ -603,3 +604,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
