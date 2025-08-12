@@ -1,0 +1,83 @@
+{
+  "contact_create_payload": {
+    "type": "ContactCreate",
+    "timestamp": "2024-01-15T10:30:00Z",
+    "contact": {
+      "id": "contact_123456789",
+      "firstName": "John",
+      "lastName": "Smith",
+      "email": "john.smith@example.com",
+      "phone": "+1234567890",
+      "companyName": "Smith's E-commerce",
+      "source": "Meta Ad - Automation Services Campaign",
+      "dateAdded": "2024-01-15T10:30:00Z",
+      "customFields": {
+        "metaLeadId": "lead_987654321",
+        "metaCampaignId": "campaign_456789",
+        "metaCampaignName": "Q1 Automation Campaign",
+        "metaAdId": "ad_123456",
+        "metaAdName": "Automation Solutions - Small Business",
+        "businessType": "E-commerce",
+        "monthlyRevenue": "$15,000",
+        "teamSize": "8",
+        "currentChallenges": "Manual order processing, customer service emails"
+      },
+      "tags": ["meta-lead", "automation-prospect"],
+      "assignedTo": "automation_team"
+    }
+  },
+  
+  "inbound_message_payload": {
+    "type": "InboundMessage",
+    "timestamp": "2024-01-15T10:35:00Z",
+    "message": {
+      "id": "msg_123456789",
+      "contactId": "contact_123456789",
+      "body": "Hi! I'm interested in learning more about your automation services. We're spending way too much time on manual processes.",
+      "type": "SMS",
+      "direction": "inbound",
+      "dateAdded": "2024-01-15T10:35:00Z",
+      "contact": {
+        "id": "contact_123456789",
+        "firstName": "John",
+        "lastName": "Smith",
+        "email": "john.smith@example.com",
+        "phone": "+1234567890"
+      }
+    }
+  },
+  
+  "contact_update_payload": {
+    "type": "ContactUpdate",
+    "timestamp": "2024-01-15T10:40:00Z",
+    "contact": {
+      "id": "contact_123456789",
+      "firstName": "John",
+      "lastName": "Smith",
+      "email": "john.smith@example.com",
+      "phone": "+1234567890",
+      "companyName": "Smith's E-commerce Store",
+      "customFields": {
+        "businessType": "E-commerce",
+        "monthlyRevenue": "$18,000",
+        "teamSize": "10",
+        "qualificationStatus": "qualified",
+        "budgetRange": "$5k-10k",
+        "timeline": "2-3 months",
+        "decisionMaker": "true"
+      },
+      "tags": ["meta-lead", "automation-prospect", "qualified", "high-priority"],
+      "lastActivity": "2024-01-15T10:40:00Z"
+    }
+  },
+  
+  "webhook_verification_request": {
+    "method": "GET",
+    "url": "https://your-webhook-url.com/webhook/ghl",
+    "query_params": {
+      "challenge": "verification_challenge_string_123456",
+      "verify_token": "your_webhook_verify_token_here"
+    },
+    "expected_response": "verification_challenge_string_123456"
+  }
+}
