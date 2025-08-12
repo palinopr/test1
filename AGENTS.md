@@ -3,7 +3,7 @@ When developing code for this repository, follow these essential practices:
 
 - **Search Before Creating**: Always search existing modules in `src/agents/`, `src/tools/`, `src/state/`, `src/webhooks/`, and `src/config/` directories before creating new functions or classes. Reuse existing functionality when possible.
 
-- **Code Formatting**: Use Black formatter with line-length 88 for all Python code. Configuration is already set in `pyproject.toml`. Run `black src/` to format code.
+- **Code Formatting**: Use Black formatter with line-length 88 for all Python code. Configuration is already set in `pyproject.toml`. Run `black src/` to format code. Pre-commit hooks are configured to automatically run Black and isort on commit.
 
 - **Import Organization**: Use isort for import sorting, configured to be compatible with Black. Run `isort src/` to organize imports properly.
 
@@ -12,13 +12,17 @@ When developing code for this repository, follow these essential practices:
   - `src/tools/`: GHL API integration utilities and LangChain tools
   - `src/state/`: Conversation state management and persistence
   - `src/webhooks/`: Webhook handlers for Meta/GHL integration
-  - `src/config/`: Configuration management and LangSmith tracing setup
+  - `src/config/`: Configuration management, validation, and LangSmith tracing setup
 
-- **Environment Variables**: Always use environment variables for API keys and configuration. Reference `.env.example` for required variables.
+- **Environment Variables**: Always use environment variables for API keys and configuration. Reference `.env.example` for required variables. Use the configuration validation system in `src/config/validation.py` to ensure proper setup.
 
-- **Logging**: Use structured logging with `structlog` following the patterns established in existing modules.
+- **Logging**: Use structured logging with `structlog` following the patterns established in existing modules. Include relevant context like `contact_id`, `thread_id`, and `conversation_id` in log messages.
 
-- **Error Handling**: Implement comprehensive error handling with fallback modes, especially for external API integrations (OpenAI, GHL, LangSmith).
+- **Error Handling**: Use the custom exception classes defined in `src/exceptions.py` for consistent error handling. Implement comprehensive error handling with fallback modes, especially for external API integrations (OpenAI, GHL, LangSmith). All exceptions should include descriptive messages and relevant context for debugging.
+
+- **Development Setup**: Use the provided `setup-dev.sh` script to automatically set up the development environment with all required dependencies and tools.
+
+- **Code Quality**: Run pre-commit hooks before committing code. Use `pre-commit run --all-files` to check all files at once.
 </general_rules>
 
 <repository_structure>
@@ -92,3 +96,4 @@ This repository uses a custom test script approach rather than standard pytest f
 
 <pull_request_formatting>
 </pull_request_formatting>
+
