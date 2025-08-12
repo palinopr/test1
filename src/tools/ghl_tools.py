@@ -16,7 +16,7 @@ import structlog
 from langchain_core.tools import BaseTool
 from pydantic import BaseModel, Field
 
-from .exceptions import GHLAPIError
+from ..exceptions import GHLAPIError
 
 logger = structlog.get_logger(__name__)
 
