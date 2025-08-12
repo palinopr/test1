@@ -1,0 +1,14 @@
+{
+  "dependencies": [
+    "."
+  ],
+  "graphs": {
+    "qualification_agent": "./src/agents/qualification_agent.py:get_qualification_agent"
+  },
+  "env": ".env",
+  "dockerfile_lines": [
+    "RUN apt-get update && apt-get install -y sqlite3",
+    "RUN pip install --no-cache-dir -r requirements.txt"
+  ],
+  "python_version": "3.11"
+}
