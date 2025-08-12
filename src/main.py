@@ -178,46 +178,7 @@ async def detailed_health_check():
             status_code=500
         )
 
-    # Check qualification agent
-    try:
-        agent = get_qualification_agent()
-        health_status["components"]["qualification_agent"] = {
-            "status": "healthy" if agent else "unhealthy",
-            "model": getattr(agent, "model_name", "unknown") if agent else None,
-        }
-    except Exception as e:
-        health_status["components"]["qualification_agent"] = {
-            "status": "error",
-            "error": str(e),
-        }
 
-    # Check state manager
-    try:
-        state_manager = get_state_manager()
-        active_conversations = state_manager.get_active_conversations(limit=1)
-        health_status["components"]["state_manager"] = {
-            "status": "healthy",
-            "database_accessible": True,
-            "active_conversations_sample": len(active_conversations),
-        }
-    except Exception as e:
-        health_status["components"]["state_manager"] = {
-            "status": "error",
-            "error": str(e),
-        }
-
-    # Determine overall status
-    component_statuses = [
-        comp.get("status", "unknown") for comp in health_status["components"].values()
-    ]
-    if "error" in component_statuses:
-        health_status["status"] = "unhealthy"
-    elif "unhealthy" in component_statuses:
-        health_status["status"] = "degraded"
-    elif "degraded" in component_statuses:
-        health_status["status"] = "degraded"
-
-    return JSONResponse(content=health_status)
 
 
 # GHL Webhook Endpoints (Corrected Flow)
@@ -624,6 +585,7 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
 
 
