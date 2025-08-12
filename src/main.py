@@ -52,6 +52,24 @@ async def lifespan(app: FastAPI):
     setup_logging()
     logger.info("Logging configured")
 
+    # Validate configuration on startup
+    try:
+        config_validator = get_config_validator()
+        config_validator.validate_on_startup()
+        logger.info("Configuration validation completed successfully")
+    except ConfigurationError as e:
+        logger.error(
+            "Configuration validation failed",
+            error=str(e),
+            missing_keys=e.required_keys,
+        )
+        # Log detailed guidance for missing configuration
+        logger.error(
+            "Please check your .env file and ensure all required environment variables are set. "
+            "Use .env.example as a template."
+        )
+        raise
+
     # Initialize LangSmith (with fallback)
     langsmith_success = initialize_langsmith()
     if langsmith_success:
@@ -604,4 +622,5 @@ def main():
 
 if __name__ == "__main__":
     main()
+
 
