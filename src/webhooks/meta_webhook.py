@@ -670,7 +670,3 @@ async def handle_webhook(
 def get_webhook_handler() -> MetaWebhookHandler:
     """Get the global webhook handler instance."""
     return webhook_handler
-
-
-
-

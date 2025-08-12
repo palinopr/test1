@@ -577,6 +577,3 @@ async def qualify_customer(
     """
     agent = get_qualification_agent()
     return await agent.process_message(message, contact_id, contact_info, thread_id)
-
-
-

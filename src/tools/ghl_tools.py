@@ -605,5 +605,3 @@ async def test_ghl_connection() -> Dict[str, Any]:
             "status_code": response.status_code,
             "has_api_key": bool(ghl_config.api_key),
         }
-
-
